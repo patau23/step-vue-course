@@ -1,9 +1,5 @@
 <script>
-import Product from "./components/Product.vue";
 export default {
-  components: {
-    Product
-  },
   data: () => {
     return {};
   },
@@ -14,10 +10,7 @@ export default {
 </script>
 
 <template>
-  <div>
-    App
-    <Product></Product>
-  </div>
+  <div>Product</div>
 </template>
 
 <style scoped></style>
