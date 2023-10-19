@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <div>App</div>
+  <div>App fjdak;lfjasdfjaksdf</div>
 </template>
 
 <style scoped></style>
