@@ -13,6 +13,11 @@ export default {
       isLoading: false,
       posts: [],
       isShown: false,
+      selectedSort: "",
+      sortOptions: [
+        { value: "title", name: "по названию" },
+        { value: "body", name: "по описанию" },
+      ],
     };
   },
   computed: {},
@@ -39,17 +44,12 @@ export default {
       this.isShown = !this.isShown;
     },
     async fetchPosts() {
-      // #1 =====
-      this.posts = (
-        await axios.get("https://jsonplaceholder.typicode.com/posts?_limit=10")
-      ).data;
-
-      // #2 =====
-      // const response = await axios.get(
-      //   "https://jsonplaceholder.typicode.com/posts?_limit=10"
-      // );
-      // this.posts = response.data;
+      const response = await axios.get(
+        "https://jsonplaceholder.typicode.com/posts?_limit=10"
+      );
+      this.posts = response.data;
     },
+    // changeOption(value) {},
   },
 };
 </script>
@@ -60,6 +60,11 @@ export default {
     <MyModal :show="isShown" :change-show="showModal">
       <PostForm :change-show="showModal" @create-post="createPost" />
     </MyModal>
+    <MySelect
+      :value="selectedSort"
+      :options="sortOptions"
+      @change-value="(v) => (selectedSort = v)"
+    />
     <PostList v-if="!isLoading" :posts="posts" @delete-post="deletePost" />
     <div v-else>... загрузка</div>
   </div>

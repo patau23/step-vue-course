@@ -27,8 +27,18 @@ export default {
 
 <template>
   <form>
-    <input type="text" class="input" placeholder="название" v-model="title" />
-    <input type="text" class="input" placeholder="описание" v-model="body" />
+    <MyInput
+      class="input"
+      placeholder="Название"
+      :value="title"
+      @change-value="(v) => (title = v)"
+    />
+    <MyInput
+      class="input"
+      placeholder="Описание"
+      :value="body"
+      @change-value="(v) => (body = v)"
+    />
     <MyButton class="" @click.prevent="sendPostEntity"> Создать </MyButton>
   </form>
 </template>
