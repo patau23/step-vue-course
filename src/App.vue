@@ -11,12 +11,28 @@ export default {
   data: () => {
     return {
       isShown: false,
+      selectedSort: "",
+      searchQuery: "",
+      sortOptins: [
+        { value: "title", name: "По названию" },
+        { value: "body", name: "По содержимому" },
+      ],
     };
   },
   computed: {
     ...mapGetters({
       STATE: "STATE",
     }),
+    searchedPosts() {},
+  },
+  watch: {
+    selectedSort: {
+      handler(value) {
+        console.log(this.STATE.posts);
+        this.SORT_POSTS(value);
+      },
+      deep: true,
+    },
   },
   async mounted() {
     await this.GET_POSTS();
@@ -26,6 +42,7 @@ export default {
       GET_POSTS: "GET_POSTS",
       DELETE_POST: "DELETE_POST",
       CREATE_POST: "CREATE_POST",
+      SORT_POSTS: "SORT_POSTS",
     }),
     createPost({ title, body }) {
       this.CREATE_POST({ title, body });
@@ -35,6 +52,12 @@ export default {
     },
     showModal() {
       this.isShown = !this.isShown;
+    },
+    changeSelectedOption(value) {
+      this.selectedSort = value;
+    },
+    search() {
+      this.SORT_POSTS(this.selectedSort, this.searchQuery);
     },
   },
 };
@@ -46,6 +69,13 @@ export default {
     <MyModal :show="isShown" :change-show="showModal">
       <PostForm :change-show="showModal" @create-post="createPost" />
     </MyModal>
+    <MySelect
+      :value="selectedSort"
+      :options="sortOptins"
+      @change-value="changeSelectedOption"
+    />
+    <MyInput v-model="searchQuery" :placeholder="'поиск ...'" />
+    <button @onclick="search">поиск</button>
     <PostList
       v-if="!STATE.loading"
       :posts="STATE.posts"

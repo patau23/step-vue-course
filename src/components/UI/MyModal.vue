@@ -19,8 +19,8 @@ export default {
 </script>
 
 <template>
-  <div class="modal" v-if="show" @click.stop="changeShow">
-    <div class="modal-content">
+  <div class="modal" v-if="show" @click.self="changeShow">
+    <div class="modal-content" >
       <button @click="changeShow">Закрыть</button>
       <slot></slot>
     </div>

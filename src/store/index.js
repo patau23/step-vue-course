@@ -30,6 +30,11 @@ export default createStore({
         userId: 9999,
       });
     },
+    SORT_POSTS: (state, data) => {
+      state.posts = state.posts.sort((a, b) => {
+        return a[data]?.localeCompare(b[data]);
+      });
+    },
   },
   actions: {
     GET_POSTS: async ({ commit }) => {
@@ -51,6 +56,13 @@ export default createStore({
       commit("CHANGE_LOADING");
       setTimeout(() => {
         commit("CREATE_NEW_POST", payload);
+        commit("CHANGE_LOADING");
+      }, 2000);
+    },
+    SORT_POSTS: ({ commit }, payload) => {
+      commit("CHANGE_LOADING");
+      setTimeout(() => {
+        commit("SORT_POSTS", payload);
         commit("CHANGE_LOADING");
       }, 2000);
     },
