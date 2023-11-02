@@ -17,6 +17,7 @@ export default {
 <template>
   <div class="post" :key="post.id">
     <div class="post-content" id="{{ post.id }}">
+      <h1>{{ post.id }}</h1>
       <div class=""><strong>Название: </strong> {{ post.title }}</div>
       <div class=""><strong>Описание: </strong> {{ post.body }}</div>
       <button class="btn-post-delete" @click="$emit('delete-post')">

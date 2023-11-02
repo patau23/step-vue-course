@@ -6,7 +6,7 @@ export default createStore({
     return {
       posts: [],
       loading: false,
-      page: 0,
+      page: 1,
       limit: 10,
       totalPages: null,
     };
@@ -50,6 +50,10 @@ export default createStore({
     GET_POSTS: async ({ state, commit }, payload) => {
       commit("CHANGE_LOADING");
       if (payload) {
+        console.log({
+          _page: payload.page,
+          _limit: payload.limit,
+        });
         const { data } = await axios.get(
           "https://jsonplaceholder.typicode.com/posts",
           {
@@ -111,5 +115,28 @@ export default createStore({
         commit("CHANGE_LOADING");
       }, 500);
     },
+    GET_POSTS_BY_PAGE: async ({ state, commit }, page) => {
+      commit("CHANGE_LOADING");
+      console.log({
+        _page: page,
+        _limit: state.limit,
+      });
+      const { data } = await axios.get(
+        "https://jsonplaceholder.typicode.com/posts",
+        {
+          params: {
+            _page: page,
+            _limit: state.limit,
+          },
+        }
+      );
+      commit("SET_POSTS", {
+        posts: data,
+        page,
+        limit: state.limit,
+      });
+      commit("CHANGE_LOADING");
+    },
+    
   },
 });

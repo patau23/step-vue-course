@@ -13,6 +13,7 @@ export default {
       isShown: false,
       selectedSort: "",
       searchQuery: "",
+      limiter: null,
       sortOptins: [
         { value: "title", name: "По названию" },
         { value: "body", name: "По содержимому" },
@@ -36,6 +37,7 @@ export default {
   },
   async mounted() {
     await this.GET_POSTS();
+    this.limiter = this.STATE.limit;
   },
   methods: {
     ...mapActions({
@@ -44,6 +46,7 @@ export default {
       CREATE_POST: "CREATE_POST",
       SORT_POSTS: "SORT_POSTS",
       SEARCH_POSTS: "SEARCH_POSTS",
+      GET_POSTS_BY_PAGE: "GET_POSTS_BY_PAGE",
     }),
     createPost({ title, body }) {
       this.CREATE_POST({ title, body });
@@ -62,6 +65,14 @@ export default {
         search: this.searchQuery,
         sortType: this.selectedSort,
       });
+    },
+    pagePrev() {
+      if (this.STATE.page >= 0) {
+        this.GET_POSTS_BY_PAGE(this.STATE.page - 1);
+      }
+    },
+    pageNext() {
+      this.GET_POSTS_BY_PAGE(this.STATE.page + 1);
     },
   },
 };
@@ -84,6 +95,13 @@ export default {
       @change-value="(v) => (searchQuery = v)"
     />
     <button @click="search">поиск</button>
+    <div class="">
+      <button class="btn" :disabled="STATE.page <= 1" @click="pagePrev">
+        {{ "<" }}
+      </button>
+      <MyInput :value="limiter" @change-value="(v) => (limiter = v)" />
+      <button class="btn" @click="pageNext">{{ ">" }}</button>
+    </div>
     <PostList
       v-if="!STATE.loading"
       :posts="STATE.posts"
@@ -119,5 +137,6 @@ form {
   padding: 10px 15px;
   background: none;
   color: teal;
+  cursor: pointer;
 }
 </style>
