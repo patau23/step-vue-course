@@ -6,9 +6,9 @@ export default createStore({
     return {
       posts: [],
       loading: false,
-      page: 0, 
+      page: 0,
       limit: 10,
-      
+      totalPages: null,
     };
   },
   getters: {
@@ -18,7 +18,9 @@ export default createStore({
   },
   mutations: {
     SET_POSTS: (state, data) => {
-      state.posts = data;
+      state.posts = data.posts;
+      state.limit = data.limit;
+      state.page = data.page;
     },
     CHANGE_LOADING: (state) => {
       state.loading = !state.loading;
@@ -45,12 +47,39 @@ export default createStore({
     },
   },
   actions: {
-    GET_POSTS: async ({ commit }) => {
+    GET_POSTS: async ({ state, commit }, payload) => {
       commit("CHANGE_LOADING");
-      const { data } = await axios.get(
-        "https://jsonplaceholder.typicode.com/posts?_limit=10"
-      );
-      commit("SET_POSTS", data);
+      if (payload) {
+        const { data } = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts",
+          {
+            params: {
+              _page: payload.page,
+              _limit: payload.limit,
+            },
+          }
+        );
+        commit("SET_POSTS", {
+          posts: data,
+          page: payload.page,
+          limit: payload.limit,
+        });
+      } else {
+        const { data } = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts",
+          {
+            params: {
+              _page: state.page,
+              _limit: state.limit,
+            },
+          }
+        );
+        commit("SET_POSTS", {
+          posts: data,
+          page: state.page,
+          limit: state.limit,
+        });
+      }
       commit("CHANGE_LOADING");
     },
     DELETE_POST: ({ commit }, payload) => {
