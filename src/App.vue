@@ -1,5 +1,5 @@
 <script>
-import axios from "axios";
+import { mapActions, mapGetters } from "vuex";
 import PostForm from "./components/PostForm.vue";
 import PostList from "./components/PostList.vue";
 
@@ -10,46 +10,32 @@ export default {
   },
   data: () => {
     return {
-      isLoading: false,
-      posts: [],
       isShown: false,
-      selectedSort: "",
-      sortOptions: [
-        { value: "title", name: "по названию" },
-        { value: "body", name: "по описанию" },
-      ],
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapGetters({
+      STATE: "STATE",
+    }),
+  },
   async mounted() {
-    this.isLoading = true;
-    await this.fetchPosts();
-    console.log(1);
-    this.isLoading = false;
+    await this.GET_POSTS();
   },
   methods: {
+    ...mapActions({
+      GET_POSTS: "GET_POSTS",
+      DELETE_POST: "DELETE_POST",
+      CREATE_POST: "CREATE_POST",
+    }),
     createPost({ title, body }) {
-      const newPost = {
-        id: Date.now(),
-        title,
-        body,
-      };
-      this.posts.push(newPost);
+      this.CREATE_POST({ title, body });
     },
     deletePost(id) {
-      this.posts = this.posts.filter((post) => post.id !== id);
+      this.DELETE_POST(id);
     },
     showModal() {
       this.isShown = !this.isShown;
     },
-    async fetchPosts() {
-      const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/posts?_limit=10"
-      );
-      this.posts = response.data;
-    },
-    // changeOption(value) {},
   },
 };
 </script>
@@ -60,13 +46,12 @@ export default {
     <MyModal :show="isShown" :change-show="showModal">
       <PostForm :change-show="showModal" @create-post="createPost" />
     </MyModal>
-    <MySelect
-      :value="selectedSort"
-      :options="sortOptions"
-      @change-value="(v) => (selectedSort = v)"
+    <PostList
+      v-if="!STATE.loading"
+      :posts="STATE.posts"
+      @delete-post="deletePost"
     />
-    <PostList v-if="!isLoading" :posts="posts" @delete-post="deletePost" />
-    <div v-else>... загрузка</div>
+    <h1 v-else>... загрузка</h1>
   </div>
 </template>
 
