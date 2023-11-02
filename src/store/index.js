@@ -6,6 +6,9 @@ export default createStore({
     return {
       posts: [],
       loading: false,
+      page: 0, 
+      limit: 10,
+      
     };
   },
   getters: {
@@ -35,6 +38,11 @@ export default createStore({
         return a[data]?.localeCompare(b[data]);
       });
     },
+    SEARCH_POSTS_BY_QUERY: (state, data) => {
+      state.posts = state.posts.filter((post) => {
+        return post.title.toLowerCase().includes(data.toLowerCase());
+      });
+    },
   },
   actions: {
     GET_POSTS: async ({ commit }) => {
@@ -50,21 +58,29 @@ export default createStore({
       setTimeout(() => {
         commit("DELETE_POST_BY_ID", payload);
         commit("CHANGE_LOADING");
-      }, 2000);
+      }, 500);
     },
     CREATE_POST: ({ commit }, payload) => {
       commit("CHANGE_LOADING");
       setTimeout(() => {
         commit("CREATE_NEW_POST", payload);
         commit("CHANGE_LOADING");
-      }, 2000);
+      }, 500);
+    },
+    SEARCH_POSTS: ({ commit, dispatch }, { search, sortType }) => {
+      commit("CHANGE_LOADING");
+      setTimeout(() => {
+        commit("SEARCH_POSTS_BY_QUERY", search);
+        dispatch("SORT_POSTS", sortType);
+        commit("CHANGE_LOADING");
+      }, 500);
     },
     SORT_POSTS: ({ commit }, payload) => {
       commit("CHANGE_LOADING");
       setTimeout(() => {
         commit("SORT_POSTS", payload);
         commit("CHANGE_LOADING");
-      }, 2000);
+      }, 500);
     },
   },
 });

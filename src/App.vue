@@ -29,7 +29,7 @@ export default {
     selectedSort: {
       handler(value) {
         console.log(this.STATE.posts);
-        this.SORT_POSTS(value);
+        // this.SORT_POSTS(value);
       },
       deep: true,
     },
@@ -43,6 +43,7 @@ export default {
       DELETE_POST: "DELETE_POST",
       CREATE_POST: "CREATE_POST",
       SORT_POSTS: "SORT_POSTS",
+      SEARCH_POSTS: "SEARCH_POSTS",
     }),
     createPost({ title, body }) {
       this.CREATE_POST({ title, body });
@@ -57,7 +58,10 @@ export default {
       this.selectedSort = value;
     },
     search() {
-      this.SORT_POSTS(this.selectedSort, this.searchQuery);
+      this.SEARCH_POSTS({
+        search: this.searchQuery,
+        sortType: this.selectedSort,
+      });
     },
   },
 };
@@ -74,8 +78,12 @@ export default {
       :options="sortOptins"
       @change-value="changeSelectedOption"
     />
-    <MyInput v-model="searchQuery" :placeholder="'поиск ...'" />
-    <button @onclick="search">поиск</button>
+    <MyInput
+      :value="searchQuery"
+      :placeholder="'поиск ...'"
+      @change-value="(v) => (searchQuery = v)"
+    />
+    <button @click="search">поиск</button>
     <PostList
       v-if="!STATE.loading"
       :posts="STATE.posts"
