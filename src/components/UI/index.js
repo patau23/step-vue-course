@@ -1,6 +1,7 @@
-import MyInput from "./MyInput.vue";
-import MyModal from "./MyModal.vue";
-import MyButton from "./MyButton.vue";
-import MySelect from './MySelect.vue'
+// import MyInput from "./MyInput.vue";
+// import MyModal from "./MyModal.vue";
+// import MyButton from "./MyButton.vue";
+// import MySelect from './MySelect.vue'
 
-export default [MyButton, MyModal, MyInput, MySelect];
+
+export default [];
